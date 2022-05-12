@@ -63,8 +63,40 @@ public class javaATM {
                 // 'C' = checking 'S' = savings 'X' = quit
                 char checkingOrSavings = selectAccount(customerIndex);
 
+                // Done with customer
+                if (checkingOrSavings == 'X')
+                    break;
+                
+                char transaction = selectTransaction();
+
+                switch (transaction) {
+                    case 'B':  // Balance
+                        System.out.printf ("$%.2f\n", getBalance(customerIndex, checkingOrSavings));
+                        break;
+                    case 'D':   // Deposit
+                        deposit(customerIndex, checkingOrSavings);
+                        break;
+                    case 'W':   // Withdraw
+                        withdraw(customerIndex, checkingOrSavings);
+                        break;
+                    case 'X':
+                        break;
+
+                }   // End of switch case
+
+                // Do you want another request for the same customer?
+                do {
+                    System.out.print ("Do you want another transaction for the same customer (Y/N)?");
+                    anotherRequest = Character.toUpperCase(getChar());
+                } while (anotherRequest != 'Y' && anotherRequest != 'N');
+
             } while (anotherRequest == 'Y');
+
+            // 5 extra liones to provide space on the screen to separate between customes
+            System.out.print ("\n\n\n\n\n");
+
         }   // End of infinite loop
+        
     }   // End of main
 
     // Start searchForCustomer()
@@ -321,4 +353,10 @@ public class javaATM {
     static char getChar() {
         return (stdin.next().toUpperCase().charAt(0));
     }   // End of getChar
+
+    // Stub routines
+    static char selectTransaction() {return ' ';}
+    static double getBalance(long customerIndex, char accountType) { return 0.00; }
+    static void deposit(long customerIndex, char accountType) { return; }
+    static void withdraw(long customerIndex, char accountType) { return; }
 }   // End of javaATM
