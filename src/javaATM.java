@@ -96,7 +96,7 @@ public class javaATM {
             System.out.print ("\n\n\n\n\n");
 
         }   // End of infinite loop
-        
+
     }   // End of main
 
     // Start searchForCustomer()
@@ -276,6 +276,28 @@ public class javaATM {
 
         return result;
     }   // End getInt()
+    
+    // Start getDouble()
+    //      Reads a real number from standard input (keyboard)
+    //      Returns the first char that was input
+    //      Displays an error message and tries again if error is detected
+    static double getDouble() {
+        double result = 0.0;
+        boolean tryAgain;
+
+        do {
+            tryAgain = false;
+             try {
+                 result = stdin.nextDouble();
+             }
+             catch (Exception e) {
+                 System.out.print ("*** Illegal entry. Enter a number. Try again\n?");
+                 tryAgain = true;
+             }
+        } while (tryAgain);
+        return result;
+
+    }   // End of get double
     
     // Start displayFile()
     //      Displays all of the customer records in the file
