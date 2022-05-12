@@ -49,7 +49,7 @@ public class javaATM {
     //      -4 = Entire customer file was dispayed to stdout
     static long searchForCustomer() {
         // Variables
-        int acctNo;
+        int accountNo;
         int pin =0;
         long customerIndex;   // -2 = customer not found, -3 = PIN doesn't match
 
@@ -61,8 +61,27 @@ public class javaATM {
         System.out.print ("0 displays the customer data file");
         System.out.print ("or Ctrl-C to end the program\n? ");   // 0 = display file
         // User input
-        acctNo = getInt();
+        accountNo = getInt();
 
+        // Conditional statements for user input
+
+        // Display the file
+        if (accountNo == 0) {
+            displayFile();
+            return -4;
+        }   // End of == 0
+
+        if (accountNo >= 0) {
+            System.out.print ("Enter PIN? ");
+            pin = getInt();
+        }   // End of good acount number
+
+        // Start binary search
+        if (BINARY_SEARCH) {
+            // The first thing to do is determine the number of customers in file
+            // Open the customer data file at the end of the file
+            RandomAccessFile ATM_file;
+        }   // End of binary search
     }   // End of searchForCustomer
 
     // Start getInt()
@@ -92,4 +111,50 @@ public class javaATM {
         return result;
     }   // End getInt()
     
+    // Start displayFile()
+    //      Displays all of the customer records in the file
+    //      Return: 0 = success, -1 = error displaying file
+    static int displayFile() {
+        // Customer record (acctNo, PIN, chk, sav)
+        ATM_record customer  = new ATM_record();
+        RandomAccessFile ATM_file;
+
+        // Start try
+        try {
+            // Open the customer file
+            ATM_file = new RandomAccessFile(ATM_FILENAME, "r");
+
+            // Display header info
+            System.out.printf ("%-7s    %-4s  %-8s   %-8s", 
+                                "Acct# ", "PIN", "Checking", "Savings");
+            
+            // Read the first customer record
+            customer.setAcctNo(ATM_file.readInt());
+            customer.setPIN(ATM_file.readInt());
+            customer.setChecking(ATM_file.readDouble());
+            customer.setSavings(ATM_file.readDouble());
+
+            // Read until end of file is reached
+            while (true) {
+                System.out.println (customer);
+                // Read next customer
+                customer.setAcctNo(ATM_file.readInt());
+                customer.setPIN(ATM_file.readInt());
+                customer.setChecking(ATM_file.readDouble());
+                customer.setSavings(ATM_file.readDouble());
+
+            }   // End of file
+
+        }   // End of try
+        catch (EOFException e) {
+            // Reached EOF without finding cutomer ?
+            ATM_file.close();
+            return 0;   // Success
+        }   // End of EOFException
+        catch (Exception e) {
+            System.out.print ("Unable to open ATM_accounts ");
+            return -1;
+        }   // End of Exception
+    }   // End of displayFile
+
 }   // End of javaATM
