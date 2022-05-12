@@ -37,6 +37,8 @@ public class javaATM {
             System.out.print ("===========================\n");
 
             customerIndex = searchForCustomer();
+
+            // Start loop
         }   // End of infinite loop
     }   // End of main
 
@@ -181,7 +183,14 @@ public class javaATM {
             }   // End of Exception e
 
         }   // End of sequential search
-        
+
+        // Customer has been found. Display balances
+        if (customerIndex >= 0) {
+            System.out.printf ("\n Checking $%.2f  Savings $%.2f\n\n", 
+                                customer.getChecking(), customer.getSavings());
+        }   // End of customer found
+
+        return customerIndex;
     }   // End of searchForCustomer
 
     // Start getInt()
