@@ -33,7 +33,7 @@ public class javaATM {
         while (true) {
             // Welcome banner
             System.out.print ("\n\n===========================\n");
-            System.out.print ("== Welcome to Phoby Bank ==\n");
+            System.out.print ("== Welcome to Phony Bank ==\n");
             System.out.print ("===========================\n");
 
             customerIndex = searchForCustomer();
@@ -116,8 +116,8 @@ public class javaATM {
         ATM_record customer = new ATM_record();
 
         // Prompt for user input
-        System.out.print ("Enter a customer account number,");
-        System.out.print ("0 displays the customer data file");
+        System.out.print ("Enter a customer account number,\n");
+        System.out.print ("0 displays the customer data file\n");
         System.out.print ("or Ctrl-C to end the program\n? ");   // 0 = display file
         // User input
         accountNo = getInt();
@@ -298,7 +298,7 @@ public class javaATM {
         return result;
 
     }   // End of get double
-    
+
     // Start displayFile()
     //      Displays all of the customer records in the file
     //      Return: 0 = success, -1 = error displaying file
@@ -336,7 +336,6 @@ public class javaATM {
         }   // End of try
         catch (EOFException e) {
             // Reached EOF without finding cutomer ?
-            ATM_file.close();
             return 0;   // Success
         }   // End of EOFException
         catch (Exception e) {
