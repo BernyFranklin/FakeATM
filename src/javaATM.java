@@ -136,6 +136,52 @@ public class javaATM {
 
         }   // End of binary search
 
+        // Start sequential search
+        else {
+            // Open the customer data file
+            RandomAccessFile ATM_file;
+
+            // Try to open file
+            try {
+                ATM_file = new RandomAccessFile(ATM_FILENAME, "r");
+                // Read first customer record
+                customer.setAcctNo(ATM_file.readInt());
+                customer.setPIN(ATM_file.readInt());
+                customer.setChecking(ATM_file.readDouble());
+                customer.setSavings(ATM_file.readDouble());
+
+                // Loop through rest of file
+                for (int i = 0; true; i++) {
+                    // Customer found
+                    if (accountNo == customer.getAcctNo()) {
+                        // Pin matches
+                        if (pin == customer.getPIN()) customerIndex = i;
+                        // Pin doesn't match
+                        else customerIndex = -3;
+                        // Exit loop
+                        break;
+                    }   // End of found
+
+                    // Read next record
+                    customer.setAcctNo(ATM_file.readInt());
+                    customer.setPIN(ATM_file.readInt());
+                    customer.setChecking(ATM_file.readDouble());
+                    customer.setSavings(ATM_file.readDouble());
+
+                }   // End of for loop
+                ATM_file.close();
+            }   // End of try
+            catch (EOFException e) {
+                // Reached end of file without finding customer
+                customerIndex= -2;
+            }   // End of EOFException
+            catch (Exception e) {
+                System.out.print ("Unable to open AT<_accounts ");
+                return -1;
+            }   // End of Exception e
+
+        }   // End of sequential search
+        
     }   // End of searchForCustomer
 
     // Start getInt()
@@ -198,7 +244,7 @@ public class javaATM {
                 customer.setSavings(ATM_file.readDouble());
 
             }   // End of file
-
+            
         }   // End of try
         catch (EOFException e) {
             // Reached EOF without finding cutomer ?
