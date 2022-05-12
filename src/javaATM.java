@@ -39,6 +39,31 @@ public class javaATM {
             customerIndex = searchForCustomer();
 
             // Start loop
+            do {
+                // Can't open customer file
+                if (customerIndex == -1) {
+                    return;   // Exit program
+                }   // End of can't open
+                // No account number found
+                else if (customerIndex == -2) {
+                    System.out.print ("Account Number not found\n");
+                    continue;
+                }   // End of no account number found
+                // Incorrect pin
+                else if (customerIndex == -3) {
+                    System.out.print ("Incorrect PIN\n");
+                    continue;
+                }   // End of incorrect pin
+                // File displayed
+                else if (customerIndex == -4) {
+                    continue;
+                }   // End of file displayed
+
+                // Call selectAccount()
+                // 'C' = checking 'S' = savings 'X' = quit
+                char checkingOrSavings = selectAccount(customerIndex);
+
+            } while (anotherRequest == 'Y');
         }   // End of infinite loop
     }   // End of main
 
@@ -266,4 +291,26 @@ public class javaATM {
         }   // End of Exception
     }   // End of displayFile
 
+    // Start selectAccount()
+    //      Return: 'C' or 'S' for checking or savings
+    static char selectAccount(long customerIndex) {
+        System.out.print ("Select account:");
+        System.out.print ("  C = checking");
+        System.out.print ("  S = savings");
+        System.out.print ("  X = cancel");
+
+        char accountType = ' ';   // C  = checking S = savings
+
+        // Start loop until valid data
+        do {
+            System.out.print ("? ");
+            accountType = Character.toUpperCase(getChar());
+
+            if (accountType == 'C' || accountType == 'S' || accountType =='X')
+                break;   // Input legal
+            System.out.print ("Illegal selection, try again.\n");
+        } while (accountType != 'C' && accountType != 'S' && accountType != 'X');
+
+        return accountType;
+    }   // End of selectAccount
 }   // End of javaATM
