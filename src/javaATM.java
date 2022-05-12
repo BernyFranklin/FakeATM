@@ -7,10 +7,10 @@
  * 12 May 2022
  */
 
- import java.util.Scanner;
- import java.io.RandomAccessFile;
- import java.io.FileNotFoundException;
- import java.io.EOFException;
+import java.util.Scanner;
+import java.io.RandomAccessFile;
+import java.io.FileNotFoundException;
+import java.io.EOFException;
 
 public class javaATM {
     // Select either the binary search or sequential search working with the customer data file
@@ -81,7 +81,61 @@ public class javaATM {
             // The first thing to do is determine the number of customers in file
             // Open the customer data file at the end of the file
             RandomAccessFile ATM_file;
+
+            // Try to open file
+            try {
+                ATM_file = new RandomAccessFile(ATM_FILENAME, "r");
+
+                // Number of customers = file size / customer record size
+                long nbytes = ATM_file.length();   // Length in bytes
+                long customerCount = nbytes / ATM_record.size;
+
+                // Prepare for binary search
+                long imin = 0;                  // Start of current search
+                long imax = customerCount -1;   // End index of current search
+                long imid;                      // midpoint for roughly equal parts
+
+                // Assume customer not found until it happens
+                customerIndex = -2;
+                // Start loop
+                while (imax >= imin) {
+                    imid = (imin + imax) / 2;   // Middle
+                    // Seek to selected customer
+                    long customerPositionInFile = imid * ATM_record.size;
+                    ATM_file.seek(customerPositionInFile);
+                    // Read customer record into customer object
+                    customer.setAcctNo(ATM_file.readInt());
+                    customer.setPIN(ATM_file.readInt());
+                    customer.setChecking(ATM_file.readDouble());
+                    customer.setSavings(ATM_file.readDouble());
+
+                    // Found customer in file
+                    if (accountNo == customer.getAcctNo()) {
+                        // Pin matches
+                        if (pin == customer.getPIN())
+                            customerIndex = imid;
+                        // Pin doesn't match
+                        else
+                            customerIndex = -3;
+                        break;   // Customer has been found
+        
+                    }   // End of found customer
+
+                    // Divide search
+                    else if (accountNo < customer.getAcctNo())
+                        imax = imid -1;    // Lower half
+                    else 
+                        imin = imid + 1;   // Upper half
+
+                }   // End of loop
+            }   // End of try
+            catch (Exception e) {
+                System.out.print ("Unable to open ATM_accounts ");
+                return -1;
+            }   // End of Exception e
+
         }   // End of binary search
+
     }   // End of searchForCustomer
 
     // Start getInt()
