@@ -313,4 +313,12 @@ public class javaATM {
 
         return accountType;
     }   // End of selectAccount
+
+    // Start getChar()
+    //      Reads line of text from standard input (keyboard)
+    //      Returns the 1st char that was input
+    //      Rest of line gets discarded
+    static char getChar() {
+        return (stdin.next().toUpperCase().charAt(0));
+    }   // End of getChar
 }   // End of javaATM
