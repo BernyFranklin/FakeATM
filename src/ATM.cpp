@@ -48,7 +48,48 @@ char selectTransaction() {
 
 // Start deposit
 void deposit(streamoff customerIndex, char accountType) {
+    double depositAmount;
+    double newBalance = 0.0;
 
+    cout << "Enter the amount to deposit: ";
+    depositAmount = getDouble();   // Check for > 0 after getting current balance
+
+    if (depositAmount <= 0.00)
+        cout << "Deposit must be greater than zero" << endl << endl;
+    else {
+        // Open in binary mode for both reading and writing
+        fstream ATM_file(ATMfilename, ios::binary | ios::in | ios::out);
+        if (ATM_file.fail()) {
+            cout << "Unable to open ATM_accounts data file" << endl;
+            return;
+        }
+        ATM currentCustomer;
+        // Seek to the selected customer from beginning of the file and update the balance
+        streamoff customerPositionInFile = customerIndex * ATM::ATMsize;
+        ATM_file.seekg(customerPositionInFile, ATM_file.beg);
+        ATM_file.read((char*)&currentCustomer, sizeof(ATM));
+
+        if (accountType == 'C') {
+            // Update checking balance
+            newBalance = currentCustomer.getChecking() + depositAmount;
+            currentCustomer.setChecking(newBalance);
+        }   // End of checking
+        else if (accountType == 'S') {
+            // Update savings balance
+            newBalance = currentCustomer.getSavings() + depositAmount;
+            currentCustomer.setSavings(newBalance);
+        }   // End of savings
+
+        // Seek back to the same record and write the updated record back to disk
+        ATM_file.seekg(customerPositionInFile, ATM_file.beg);
+        ATM_file.write((char*)&currentCustomer, sizeof(ATM));
+
+        ATM_file.close();   // Close the file
+
+        // Display updated balance
+        cout << fixed << showpoint << setprecision(2); // display 2 digits past decimal
+        cout << "Your balance is $" << newBalance << endl;
+    }   // End of processed withdrawal
 }   // End of deposit
 
 // Start withdraw
@@ -110,7 +151,7 @@ void withdraw(streamoff customerIndex, char accountType) {
         cout << fixed << showpoint << setprecision(2); // display 2 digits past decimal
         cout << "Your balance is $" << newBalance << endl;
     }   // End of processed withdrawal
-    
+
 }   // End of withdraw
 
 // Start getChar
