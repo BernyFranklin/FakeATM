@@ -437,7 +437,83 @@ public class javaATM {
 
     } // End of getBalance
 
-    
+
     static void deposit(long customerIndex, char accountType) { return; }
-    static void withdraw(long customerIndex, char accountType) { return; }
+
+    // Start withdraw()
+    //      Where:
+    //              customerIndex = customer within the file
+    //              acountType = 'C' checking or 'S' Savings
+    //      The function requests the amount to withdraw, then
+    //          validates that the amount is an even multiple of $20.00
+    //      Maximum withdraw is $500.00
+    //      Reads the customer record and validates sufficient funds
+    //      Deducts the deposit and updates the customer data file
+    static int withdraw(long customerIndex, char accountType) {
+        // Customer record (acctNo, PIN, chk, sav)
+        ATM_record customer = new ATM_record();
+        RandomAccessFile ATM_file;
+        double withdrawAmount;
+        double newBalance = 0.0;
+
+        System.out.print ("Enter the amount of the withdrawal in increments of $20 up to $500:");
+
+        withdrawAmount = getDouble();
+
+        // Compute amount of withdrawal in pennies used to check for increments of $20.00
+        int intWithdrawX100 = (int)(withdrawAmount * 100);   // COnvert to pennies
+
+        if (withdrawAmount <= 0.00)
+            System.out.print ("Withdrawal must be greater than zero\n\n");
+        else if (withdrawAmount > 500.00)
+            System.out.print ("Withdrawal must not exceed $500.00\n\n");
+        else if (intWithdrawX100 % 2000 != 0 )   // 2000 = $20.00 in pennies
+            System.out.print ("Withdrawal must be in increments of $20.00\n\n");
+        // Withdraw amount legal
+        else  {
+            // Try and open the file
+            try {
+                ATM_file = new RandomAccessFile(ATM_FILENAME, "rw");
+                // Seek to selected customer record
+                ATM_file.seek(customerIndex * ATM_record.size);
+                // Read customer record
+                customer.setAcctNo(ATM_file.readInt());
+                customer.setPIN(ATM_file.readInt());
+                customer.setChecking(ATM_file.readDouble());
+                customer.setSavings(ATM_file.readDouble());
+
+                // Update the balance for the selected account type
+                if (accountType == 'C') {
+                    newBalance = customer.getChecking() - withdrawAmount;
+                    customer.setChecking(newBalance);
+                }   // End of checking
+                else if (accountType == 'S') {
+                    newBalance = customer.getSavings() - withdrawAmount;
+                    customer.setSavings(newBalance);
+                }   // End of savings
+
+                // Seek back to the same record and write the updated record back to disk
+                ATM_file.seek(customerIndex * ATM_record.size);
+                ATM_file.writeInt(customer.getAcctNo());
+                ATM_file.writeInt(customer.getPIN());
+                ATM_file.writeDouble(customer.getChecking());
+                ATM_file.writeDouble(customer.getSavings());
+                ATM_file.close();
+
+                // Display the updated balance
+                System.out.printf ("Your balance is $%.2f\n", newBalance);
+
+            }   // End of try
+            catch (EOFException e) {
+                return -1;
+            }   // End of EOFException
+            catch (Exception e) {
+                System.out.print ("Unable to open ATM_accounts ");
+                return -2;
+            }   // End of Exception
+        }   // End of valid withdraw amount
+
+        return 0;   // No Error
+    }   // End of withdraw
+
 }   // End of javaATM
