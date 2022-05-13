@@ -37,8 +37,33 @@ char selectAccount(streamoff customerIndex) {
 }   // End of selectAccount
 
 // Start getBalance
+//      Where:
+//          customerIndex = customer number in the file
+//          accountType = 'C' checking or 'S' savings
+//      Return: balance of either checking or savings account of customer
 double getBalance(streamoff customerIndex, char accountType) {
+    double balance = 0.0;
+    // Search the file for the customer number
+    ifstream ATM_file(ATMfilename, ios::binary);
 
+    if (ATM_file.fail()) {
+        cout << "Unable to open ATM_accounts " << endl;
+        return balance;
+    }   // End of fail
+
+    ATM customer;    // Customer object
+    // Seek to the selected customer
+    streamoff customerPositionInFile = customerIndex * ATM::ATMsize;
+    ATM_file.seekg(customerPositionInFile, ATM_file.beg);
+    ATM_file.read((char*)&customer, sizeof(customer));
+
+    if (accountType == 'C')
+        balance = customer.getChecking();
+    else if (accountType == 'S')
+        balance = customer.getSavings();
+    ATM_file.close();   // Close file
+
+    return balance;
 }   // End of getBalance
 
 // Start selectTransaction
@@ -58,7 +83,7 @@ char selectTransaction() {
         if (transactionType == 'B' || transactionType == 'D' || transactionType == 'W' || transactionType == 'X')
             break;   // Legal selection
         cout << "  Illegal selection. Try Again." << endl;
-        
+
     } while (transactionType != 'B' && transactionType != 'D' && transactionType != 'W' && transactionType != 'X');
 
     return transactionType;
