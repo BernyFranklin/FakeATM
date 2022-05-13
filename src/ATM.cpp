@@ -60,7 +60,9 @@ void withdraw(streamoff customerIndex, char accountType) {
 //      Reads a line of text from standard input
 //      Returns a character
 char getChar() {
-
+    char buff[100];
+    cin.getline(buff, 100);
+    return(buff[0]);
 }   // End of getChar
 
 // Start getInt
