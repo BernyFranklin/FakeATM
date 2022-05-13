@@ -32,8 +32,24 @@ int displayFile() {
 }   // End of displayFile
 
 // Start selectAccount
+//      Returns: 'C' checking or 'S' savings
 char selectAccount(streamoff customerIndex) {
+    cout << "select account:" << endl;
+    cout << "  C = checking" << endl;
+    cout << "  S = savings" << endl;
+    cout << "  X = cancel" << endl;
 
+    char accountType = ' '; 
+
+    do {
+        cout << ": ";
+        accountType = toupper(getChar());
+
+        if (accountType == 'C' || accountType == 'S' || accountType == 'X')
+            break;   // Legal selection
+    } while (accountType != 'C' && accountType != 'S' && accountType != 'X');
+
+    return accountType;
 }   // End of selectAccount
 
 // Start getBalance
