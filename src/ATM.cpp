@@ -42,11 +42,34 @@ double getBalance(streamoff customerIndex, char accountType) {
 }   // End of getBalance
 
 // Start selectTransaction
+//      Returns 'B' || 'D' || 'W' || 'X'
 char selectTransaction() {
+    cout << "Select transaction:" << endl;
+    cout << "  B = Balance" << endl;
+    cout << "  D = Deposit" << endl;
+    cout << "  W = Withdraw" << endl;
+    cout << "  X = Cancel" << endl;
 
+    char transactionType = ' ';
+
+    do {
+        transactionType  = toupper(getChar());
+
+        if (transactionType == 'B' || transactionType == 'D' || transactionType == 'W' || transactionType == 'X')
+            break;   // Legal selection
+        cout << "  Illegal selection. Try Again." << endl;
+        
+    } while (transactionType != 'B' && transactionType != 'D' && transactionType != 'W' && transactionType != 'X');
+
+    return transactionType;
 }   // End of selectTransaction
 
 // Start deposit
+//      Where:
+//          customerIndex = customer within the file
+//          accountType = 'C' checking or 'S' savings
+//      The function requests the amount to deposit, then
+//      updates the data file    
 void deposit(streamoff customerIndex, char accountType) {
     double depositAmount;
     double newBalance = 0.0;
@@ -89,7 +112,7 @@ void deposit(streamoff customerIndex, char accountType) {
         // Display updated balance
         cout << fixed << showpoint << setprecision(2); // display 2 digits past decimal
         cout << "Your balance is $" << newBalance << endl;
-    }   // End of processed withdrawal
+    }   // End of processed deposit
 }   // End of deposit
 
 // Start withdraw
