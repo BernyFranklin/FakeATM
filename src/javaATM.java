@@ -489,7 +489,7 @@ public class javaATM {
                 ATM_file.close();
 
                 // Display updated balance
-                System.out.printf ("Your balance is $.2f\n", newBalance);
+                System.out.printf ("Your balance is $%.2f\n", newBalance);
             }   // End of try
             catch (EOFException e) {
                 return -1;
@@ -499,9 +499,9 @@ public class javaATM {
                 return -2;
             }   // End of Exception
 
-            return 0;
         }   // End of valid deposit
 
+        return 0;
     }   // End of deposit
 
     // Start withdraw()
