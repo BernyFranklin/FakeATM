@@ -22,13 +22,97 @@ int main() {
 }   // End of main
 
 // Start searchForCustomer
+//      Return:
+//          >= 0 index into the file for the selected customer
+//          -1 = unable to open the customer file
+//          -2 = customer not found  in the file
+//          -3 = PIN doesn't match
+//          -4 = customer file displayed to stdout
 streamoff searchForCustomer() {
+    int accountNo;
+    int pin;
+    streamoff customerIndex= 0;
+    ATM customer;
+    cout << "Select a customer account number" << endl;
+    cout << "[0] key to display the customer data file" << endl;
+    cout << "Enter selection: ";
+    accountNo = getInt();
 
+    if (accountNo == 0) {  // Display file
+        displayFile();
+        return -4;        // File displayed
+    }   // End of Display file
+
+    if (accountNo >= 0) {
+        cout << "Enter PIN: ";
+        pin = getInt();
+    }   // End of Account number entered
+
+    // Open customer data file
+    ifstream ATM_file(ATMfilename, ios::binary);
+
+    if (ATM_file.fail()) {
+        cout << "Unable to open ATM_accounts" << endl;
+        return -1;   // Unable to open file
+    }   // End of fail
+
+    ATM_file.read((char*)&customer, sizeof(customer));   // Read first record
+
+    for (int i =0; !ATM_file.eof(); i++) {
+        if (accountNo == customer.getAcctNo()) {
+            // Customer found
+            if (pin == customer.getPIN()) customerIndex = i;   // Pin matches customer
+            else customerIndex = -3;                           // Pin doesn't match
+            break;                                             // Pin and customer match, exit
+        }   // End of valid customer and pin
+
+        ATM_file.read((char*)&customer, sizeof(customer));   // Next customer
+    }   // End of loop
+
+    if (ATM_file.eof())   // Reached end of file with no match
+        customerIndex = -2;
+    ATM_file.close();
+
+    if (customerIndex >= 0) {
+        // Customer found 
+        cout << fixed << showpoint << setprecision(2);
+        cout << endl << "Checking $" << customer.getChecking()
+             << " Savings $" << customer.getSavings() << endl << endl;
+    }   // End of found customer
+
+    return customerIndex;
 }   // End of searchForCustomer
 
 // Start displayFile
+//      Displays all of the customer records on file
+//      Returns: 0 - Success, -1 - Error displaying file
 int displayFile() {
+    ifstream ATM_file(ATMfilename, ios::binary);
 
+    if (ATM_file.fail()) {
+        cout << " Unable to open ATM_accounts data file" << endl;
+        return -1;
+    }   // End of fail
+
+    ATM customer;
+    // Display header info
+    cout << fixed << showpoint << setprecision(2);   // Format output
+    cout << setw(-7) << " Acct #" << "     "
+         << setw(-4) << "PIN" << "   "
+         << setw(-8) << "Checking" << "   "
+         << setw(-8) << "Savings" << endl;
+
+    ATM_file.read((char*)&customer, sizeof(customer));   // Read first customer
+    for (int i = 0; !ATM_file.eof(); i++) {
+        cout << setw(7) << customer.getAcctNo() << "     "
+             << setw(4) << customer.getPIN() << "   "
+             << setw(8) << customer.getChecking() << "   "
+             << setw(8) << customer.getSavings() << endl;
+        ATM_file.read((char*)&customer, sizeof(customer));   // Read next customer
+    }   // End of loop
+    ATM_file.close();
+
+    return 0;
 }   // End of displayFile
 
 // Start selectAccount
