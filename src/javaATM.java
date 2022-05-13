@@ -375,7 +375,6 @@ public class javaATM {
         return (stdin.next().toUpperCase().charAt(0));
     }   // End of getChar
 
-    // Stub routines
     // Start selectTransaction
     //      Returns 'B' 'W' 'D' or 'X'
     static char selectTransaction() {
@@ -395,7 +394,50 @@ public class javaATM {
 
         return transactionType;
     }   // End selectTransaction
-    static double getBalance(long customerIndex, char accountType) { return 0.00; }
+
+    // Start getBalance()
+    //      Where:
+    //              customerIndex = customer number in file
+    //              accountType = 'C' checking or 'S' savings
+    //      Return: balance of either customer's checking or savings account
+    static double getBalance(long customerIndex, char accountType) {
+        // Customer record (acctNo, PIN, chk, sav)
+        ATM_record customer = new ATM_record();
+        double balance = -1;
+        RandomAccessFile ATM_file;
+
+        // Try to open file
+        try {
+            ATM_file = new RandomAccessFile(ATM_FILENAME, "r");
+            // Seek to the selected file
+            ATM_file.seek(customerIndex * ATM_record.size);
+            // Read customer record
+            customer.setAcctNo(ATM_file.readInt());
+            customer.setPIN(ATM_file.readInt());
+            customer.setChecking(ATM_file.readDouble());
+            customer.setSavings(ATM_file.readDouble());
+
+            // Return Balance of selected account type
+            if (accountType =='C')
+                balance = customer.getChecking();
+            else if (accountType == 'S')
+                balance = customer.getSavings();
+            // Close file
+            ATM_file.close();
+
+            return balance;
+        }   // End of try
+        catch (EOFException e ) {
+            return -1;
+        }   // End of EOFException
+        catch (Exception e) {
+            System.out.print ("Unable to open ATM_accounts");
+            return -2;
+        }   // End of Exception 
+
+    } // End of getBalance
+
+    
     static void deposit(long customerIndex, char accountType) { return; }
     static void withdraw(long customerIndex, char accountType) { return; }
 }   // End of javaATM
