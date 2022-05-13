@@ -43,7 +43,7 @@
 
      @Override
      public String toString() {
-         return String.format("%7s  %4s  %8s  %8s", acctNo, pin, checking, savings);
+         return String.format("%7s   %4s  %8s  %8s", acctNo, pin, checking, savings);
      }   // End of toString
      
  }   // End of ATM_record

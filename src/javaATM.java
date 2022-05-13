@@ -313,7 +313,7 @@ public class javaATM {
             ATM_file = new RandomAccessFile(ATM_FILENAME, "r");
 
             // Display header info
-            System.out.printf ("%-7s    %-4s  %-8s   %-8s", 
+            System.out.printf ("%-7s    %-4s  %-8s   %-8s\n", 
                                 "Acct# ", "PIN", "Checking", "Savings");
             
             // Read the first customer record
@@ -438,7 +438,71 @@ public class javaATM {
     } // End of getBalance
 
 
-    static void deposit(long customerIndex, char accountType) { return; }
+    // Start deposit()
+    //      Where:
+    //              customerIndex = customer within the file
+    //              accountType = 'C' checking or 'S' savings
+    //      The function requests the amount to deposit, then
+    //          reads the customer record  and adds the deposit
+    //          and updates the customer data file
+    static int deposit(long customerIndex, char accountType) {
+        // Customer record (acctNo, PIN, chk, sav)
+        ATM_record customer = new ATM_record();
+        RandomAccessFile ATM_file;
+        double depositAmount;
+        double newBalance = 0.0;
+        System.out.print ("Enter the amount to deposit: ");
+
+        depositAmount = getDouble();
+
+        if (depositAmount <= 0)
+            System.out.print ("Deposit must be greater than zero\n\n");
+        else {
+            // Try to open the file
+            try {
+                ATM_file = new RandomAccessFile(ATM_FILENAME, "rw");
+                // Seek to the requested record
+                ATM_file.seek(customerIndex * ATM_record.size);
+
+                // Read the record
+                customer.setAcctNo(ATM_file.readInt());
+                customer.setPIN(ATM_file.readInt());
+                customer.setChecking(ATM_file.readDouble());
+                customer.setSavings(ATM_file.readDouble());
+
+                // Update the balance for the selected account
+                if (accountType == 'C') {
+                    newBalance = customer.getChecking() + depositAmount;
+                    customer.setChecking(newBalance);
+                }   // End of checking
+                else if (accountType == 'S') {
+                    newBalance = customer.getSavings() + depositAmount;
+                    customer.setSavings(newBalance);
+                }   // End of savings
+
+                // Seek back to requested record and update data file
+                ATM_file.seek(customerIndex * ATM_record.size);
+                ATM_file.writeInt(customer.getAcctNo());
+                ATM_file.writeInt(customer.getPIN());
+                ATM_file.writeDouble(customer.getChecking());
+                ATM_file.writeDouble(customer.getSavings());
+                ATM_file.close();
+
+                // Display updated balance
+                System.out.printf ("Your balance is $.2f\n", newBalance);
+            }   // End of try
+            catch (EOFException e) {
+                return -1;
+            }   // End of EOFException
+            catch (Exception e) {
+                System.out.print ("Unable to open ATM_accounts ");
+                return -2;
+            }   // End of Exception
+
+            return 0;
+        }   // End of valid deposit
+
+    }   // End of deposit
 
     // Start withdraw()
     //      Where:
@@ -448,7 +512,7 @@ public class javaATM {
     //          validates that the amount is an even multiple of $20.00
     //      Maximum withdraw is $500.00
     //      Reads the customer record and validates sufficient funds
-    //      Deducts the deposit and updates the customer data file
+    //      Deducts the withdrawal and updates the customer data file
     static int withdraw(long customerIndex, char accountType) {
         // Customer record (acctNo, PIN, chk, sav)
         ATM_record customer = new ATM_record();
@@ -456,7 +520,7 @@ public class javaATM {
         double withdrawAmount;
         double newBalance = 0.0;
 
-        System.out.print ("Enter the amount of the withdrawal in increments of $20 up to $500:");
+        System.out.print ("Enter the amount of the withdrawal in increments of $20 up to $500: ");
 
         withdrawAmount = getDouble();
 
