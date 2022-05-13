@@ -52,8 +52,65 @@ void deposit(streamoff customerIndex, char accountType) {
 }   // End of deposit
 
 // Start withdraw
+//      Where:
+//          customerIndex = customer within the file
+//          accountType = 'C' checking or 'S' savings
+//      The function requests the amount to withdraw, then 
+//      validates that the amount is an even multiple of
+//      $20.00, maximum withdraw is $500.00
+//      Reads the customer record and validates sufficient funds
+//      and deducts the amount and updates the data file    
 void withdraw(streamoff customerIndex, char accountType) {
+    double withdrawAmount;
+    double newBalance = 0.0;
 
+    cout << "Enter the amount of the withdrawal in increments of $20 up to $500: ";
+    withdrawAmount = getDouble();   // Check for > 0 after getting current balance
+
+    // Comput amount to withdraw in pennies used to check for increments of $20.00
+    int intWithdrawX100 = (int)(withdrawAmount * 100);   // convert to pennies
+
+    if (withdrawAmount <= 0.00)
+        cout << "Withdrawal must be greater than zero" << endl << endl;
+    else if (withdrawAmount > 500.00)
+        cout << "Withdraw must not exceed $500" << endl << endl;
+    else if (intWithdrawX100 % 2000 != 0)   // 2000 is $20 in pennies
+        cout << "Withdraw must be in increments of $20" << endl << endl;
+    else {
+        // Open in binary mode for both reading and writing
+        fstream ATM_file(ATMfilename, ios::binary | ios::in | ios::out);
+        if (ATM_file.fail()) {
+            cout << "Unable to open ATM_accounts data file" << endl;
+            return;
+        }
+        ATM currentCustomer;
+        // Seek to the selected customer from beginning of the file and update the balance
+        streamoff customerPositionInFile = customerIndex * ATM::ATMsize;
+        ATM_file.seekg(customerPositionInFile, ATM_file.beg);
+        ATM_file.read((char*)&currentCustomer, sizeof(ATM));
+
+        if (accountType == 'C') {
+            // Update checking balance
+            newBalance = currentCustomer.getChecking() - withdrawAmount;
+            currentCustomer.setChecking(newBalance);
+        }   // End of checking
+        else if (accountType == 'S') {
+            // Update savings balance
+            newBalance = currentCustomer.getSavings() - withdrawAmount;
+            currentCustomer.setSavings(newBalance);
+        }   // End of savings
+
+        // Seek back to the same record and write the updated record back to disk
+        ATM_file.seekg(customerPositionInFile, ATM_file.beg);
+        ATM_file.write((char*)&currentCustomer, sizeof(ATM));
+
+        ATM_file.close();   // Close the file
+
+        // Display updated balance
+        cout << fixed << showpoint << setprecision(2); // display 2 digits past decimal
+        cout << "Your balance is $" << newBalance << endl;
+    }   // End of processed withdrawal
+    
 }   // End of withdraw
 
 // Start getChar
