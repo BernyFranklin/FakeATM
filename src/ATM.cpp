@@ -57,17 +57,43 @@ void withdraw(streamoff customerIndex, char accountType) {
 }   // End of withdraw
 
 // Start getChar
+//      Reads a line of text from standard input
+//      Returns a character
 char getChar() {
 
 }   // End of getChar
 
 // Start getInt
+//      Reads a number from standard input
+//      Retruns an integer
+//      Displays error for bad input
 int getInt() {
+    int result;
+    bool tryAgain;
 
+    do {
+        tryAgain = false;
+        try {
+            char buff[100];
+            cin.getline(buff, 100);
+            result = atoi(buff);
+
+            if (cin.fail())
+                throw 1;
+        }
+        catch (...) {
+            cout << "*** Illegal entry. Enter an integer. Try again." << endl << ": ";
+            cin.clear();              // Clear buffer
+            cin.ignore(1000, '\n');   // Ignore anything else before cin
+            tryAgain = true;
+        }
+    } while (tryAgain);
+
+    return result;
 }   // End of getInt
 
 // Start getDouble
-//      Reads a real number from standard input (keyboard)
+//      Reads a real number from standard input
 //      Returns a double
 //      Displays error for bad input
 double getDouble() {
@@ -81,10 +107,12 @@ double getDouble() {
             cin.getline(buff, 100);
             result = atof(buff);
             if (cin.fail())
-            throw 1;   // Error code 1
+                throw 1;   // Error code 1
         }
         catch(...) {
             cout << "*** Illegal entry. Enter a number. Try again." << endl << ": ";
+            cin.clear();              // Clear buffer
+            cin.ignore(1000, '\n');   // Ignore anything else before cin
             tryAgain = true;
         }
     } while (tryAgain);
