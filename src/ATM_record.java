@@ -1,5 +1,5 @@
 /*
- * fakeATM Version#1.0
+ * ATM_record.java Version#1.0
  * Frank Bernal
  * CIS 084 Java Programming
  * Input

@@ -1,5 +1,5 @@
 /*
- * fakeATM Version#1.0
+ * javaATM.java Version#1.0
  * Frank Bernal
  * CIS 084 Java Programming
  * Input
@@ -63,15 +63,20 @@ public class javaATM {
                 // 'C' = checking 'S' = savings 'X' = quit
                 char checkingOrSavings = selectAccount(customerIndex);
 
+                
                 // Done with customer
                 if (checkingOrSavings == 'X')
                     break;
+                else if (checkingOrSavings == 'C')
+                    System.out.printf ("\nChecking Selected\n");
+                else if (checkingOrSavings == 'S')
+                    System.out.printf ("\nSavings Selected\n");
                 
                 char transaction = selectTransaction();
 
                 switch (transaction) {
                     case 'B':  // Balance
-                        System.out.printf ("$%.2f\n", getBalance(customerIndex, checkingOrSavings));
+                        System.out.printf ("Balance: $%.2f\n", getBalance(customerIndex, checkingOrSavings));
                         break;
                     case 'D':   // Deposit
                         deposit(customerIndex, checkingOrSavings);
@@ -117,8 +122,8 @@ public class javaATM {
 
         // Prompt for user input
         System.out.print ("Enter a customer account number,\n");
-        System.out.print ("0 displays the customer data file\n");
-        System.out.print ("or Ctrl-C to end the program\n? ");   // 0 = display file
+        System.out.print ("[0] displays the customer data file\n");
+        System.out.print ("Enter here: ");   // 0 = display file
         // User input
         accountNo = getInt();
 
@@ -131,7 +136,7 @@ public class javaATM {
         }   // End of == 0
 
         if (accountNo >= 0) {
-            System.out.print ("Enter PIN? ");
+            System.out.print ("Enter PIN: ");
             pin = getInt();
         }   // End of good acount number
 
@@ -235,7 +240,7 @@ public class javaATM {
                 customerIndex= -2;
             }   // End of EOFException
             catch (Exception e) {
-                System.out.print ("Unable to open AT<_accounts ");
+                System.out.print ("Unable to open ATM_accounts ");
                 return -1;
             }   // End of Exception e
 
@@ -347,7 +352,7 @@ public class javaATM {
     // Start selectAccount()
     //      Return: 'C' or 'S' for checking or savings
     static char selectAccount(long customerIndex) {
-        System.out.print ("Select account:");
+        System.out.print ("Select account");
         System.out.print ("  C = checking");
         System.out.print ("  S = savings");
         System.out.print ("  X = cancel");
@@ -356,12 +361,12 @@ public class javaATM {
 
         // Start loop until valid data
         do {
-            System.out.print ("? ");
+            System.out.print (": ");
             accountType = Character.toUpperCase(getChar());
 
             if (accountType == 'C' || accountType == 'S' || accountType =='X')
                 break;   // Input legal
-            System.out.print ("Illegal selection, try again.\n");
+            System.out.print ("Illegal selection, try again\n");
         } while (accountType != 'C' && accountType != 'S' && accountType != 'X');
 
         return accountType;
@@ -386,6 +391,7 @@ public class javaATM {
 
         char transactionType = ' ';
         do {
+            System.out.print (": ");
             transactionType = getChar();
             if (transactionType == 'B' || transactionType =='D' || transactionType == 'W' || transactionType == 'X')
                 break;
