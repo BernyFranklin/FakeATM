@@ -376,7 +376,25 @@ public class javaATM {
     }   // End of getChar
 
     // Stub routines
-    static char selectTransaction() {return ' ';}
+    // Start selectTransaction
+    //      Returns 'B' 'W' 'D' or 'X'
+    static char selectTransaction() {
+        System.out.println ("Select transaction:");
+        System.out.println ("  B = Balance");
+        System.out.println ("  D = Deposit");
+        System.out.println ("  W = Withdraw");
+        System.out.println ("  X = Cancel");
+
+        char transactionType = ' ';
+        do {
+            transactionType = getChar();
+            if (transactionType == 'B' || transactionType =='D' || transactionType == 'W' || transactionType == 'X')
+                break;
+            System.out.println ("  Illegal selection. Try again.");
+        } while (transactionType != 'B' && transactionType != 'D' && transactionType != 'W' && transactionType != 'X');
+
+        return transactionType;
+    }   // End selectTransaction
     static double getBalance(long customerIndex, char accountType) { return 0.00; }
     static void deposit(long customerIndex, char accountType) { return; }
     static void withdraw(long customerIndex, char accountType) { return; }
