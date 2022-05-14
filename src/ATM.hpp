@@ -11,7 +11,7 @@
  using namespace std;
 
  // Location of the ATM data file on the disk
- static const char ATMfilename[] = "/Users/frankbernal/Documents/GitHub/FakeATM/src/ATM_accounts.bin";
+ static const char ATMfilename[] = "/Users/frankbernal/Documents/GitHub/FakeATM/src/ATM_accounts.dat";
 
  class ATM {
      private:

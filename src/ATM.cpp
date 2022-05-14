@@ -18,7 +18,63 @@ using namespace std;
 
 // Start main
 int main() {
+    streamoff customerIndex;
+    char anotherRequest = ' ';
 
+    while (true) {
+        cout << "\n\n========================================\n";
+        cout <<     "       -- Welcome to Phony Bank --      \n";
+        cout <<     "========================================\n\n";
+
+        customerIndex = searchForCustomer();
+
+        do {
+            if (customerIndex == -1) {
+                return -1;   // Can't open file, end program
+            }
+            else if (customerIndex == -2) {
+                cout << "Account number not found" << endl;
+                continue;
+            }
+            else if (customerIndex == -3) {
+                cout << "Incorrect PIN" << endl;
+                continue;
+            }
+            else if (customerIndex == -4)
+                continue;
+            
+            char checkingOrSavings = selectAccount(customerIndex);
+
+            if (checkingOrSavings == 'X')
+                break;   // Done with customer
+            
+            char transaction = selectTransaction();
+
+            switch (transaction) {
+                case 'B':   // Balance
+                    cout << showpoint << fixed << setprecision(2);
+                    cout << "$" << getBalance(customerIndex, checkingOrSavings) << endl;
+                    break;
+                case 'D':   // Deposit
+                    deposit(customerIndex, checkingOrSavings);
+                    break;
+                case 'W':   // Withdraw
+                    withdraw(customerIndex, checkingOrSavings);
+                    break;
+                case 'X':   // Cancel
+                    break;
+            }   // End of switch
+
+            // Do you want another request for the same customer?
+            do {
+                cout << "Do you want another transaction for the same customer (Y/N): ";
+                anotherRequest = toupper(getChar());
+            } while (anotherRequest != 'Y' && anotherRequest != 'N');
+
+        } while (anotherRequest == 'Y');
+    }   // End of loop
+
+    return 0;
 }   // End of main
 
 // Start searchForCustomer
@@ -98,7 +154,7 @@ int displayFile() {
     // Display header info
     cout << fixed << showpoint << setprecision(2);   // Format output
     cout << setw(-7) << " Acct #" << "     "
-         << setw(-4) << "PIN" << "   "
+         << setw(-4) << "PIN" << "     "
          << setw(-8) << "Checking" << "   "
          << setw(-8) << "Savings" << endl;
 
